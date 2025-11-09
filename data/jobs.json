@@ -1,0 +1,21 @@
+{
+  "lastUpdated": "2025-11-09T10:00:00Z",
+  "jobs": [
+    {
+      "id": "job-001",
+      "jobCode": "MFI-2024-001",
+      "title": "Senior Full Stack Developer",
+      "company": "Meta Force IT",
+      "location": "San Francisco, CA",
+      "state": "CA",
+      "type": "Full-Time",
+      "workMode": "Remote",
+      "description": "Looking for an experienced full stack developer proficient in React, Node.js, and AWS",
+      "salary": "$120K - $180K",
+      "status": "Active",
+      "skills": ["React", "Node.js", "AWS"],
+      "icon": "fa-code",
+      "iconColor": "from-blue-100 to-blue-200"
+    }
+  ]
+}
