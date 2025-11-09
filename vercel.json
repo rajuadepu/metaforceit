@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "metaforceit",
   "builds": [
     {
       "src": "api/**/*.js",
@@ -12,9 +11,5 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
-  ],
-  "env": {
-    "CEIPAL_USERNAME": "@ceipal-username",
-    "CEIPAL_PASSWORD": "@ceipal-password"
-  }
+  ]
 }
