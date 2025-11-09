@@ -90,37 +90,42 @@ async function fetchJobsFromCeipal() {
  * Login to Ceipal and get session
  */
 async function loginToCeipal(fetch) {
-    const username = process.env.CEIPAL_USERNAME;
-    const password = process.env.CEIPAL_PASSWORD;
+    const username = process.env.CEIPAL_USERNAME || 'ab@metaforceit.com';
+    const password = process.env.CEIPAL_PASSWORD || 'Ganesha@123';
     
     if (!username || !password) {
         throw new Error('Ceipal credentials not configured');
     }
     
-    // This is a placeholder - actual implementation depends on Ceipal's auth mechanism
-    // Common methods:
-    // 1. Form POST to login endpoint
-    // 2. API token authentication
-    // 3. OAuth flow
+    console.log('🔐 Attempting to login to Ceipal...');
     
-    const loginResponse = await fetch(`${CEIPAL_BASE_URL}/login`, {
+    // Try to login to Ceipal signin page
+    const loginResponse = await fetch(`${CEIPAL_BASE_URL}/signin/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         },
         body: new URLSearchParams({
-            username: username,
-            password: password,
-            // Add other required fields based on Ceipal's login form
-        })
+            'username': username,
+            'password': password,
+            'rememberMe': 'false'
+        }),
+        redirect: 'manual'
     });
     
-    if (!loginResponse.ok) {
-        throw new Error('Failed to login to Ceipal');
-    }
+    console.log('Login response status:', loginResponse.status);
     
-    // Extract session cookie or token
-    const cookies = loginResponse.headers.get('set-cookie');
+    // Extract session cookies
+    const setCookieHeader = loginResponse.headers.raw()['set-cookie'];
+    const cookies = setCookieHeader ? setCookieHeader.join('; ') : '';
+    
+    console.log('Cookies received:', cookies ? 'Yes' : 'No');
+    
+    if (!cookies) {
+        throw new Error('Failed to obtain session cookies from Ceipal');
+    }
     
     return cookies;
 }
@@ -129,28 +134,41 @@ async function loginToCeipal(fetch) {
  * Fetch job postings from Ceipal
  */
 async function fetchJobPostings(fetch, session) {
-    // Check if Ceipal provides JSON API
+    console.log('📥 Fetching job postings from Ceipal...');
+    
     const response = await fetch(`${CEIPAL_BASE_URL}/JobPosts/index`, {
         headers: {
             'Cookie': session,
-            'Accept': 'application/json, text/html',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
     });
     
+    console.log('Jobs page response status:', response.status);
+    
     if (!response.ok) {
-        throw new Error('Failed to fetch job postings');
+        throw new Error(`Failed to fetch job postings: ${response.status}`);
     }
     
     const contentType = response.headers.get('content-type');
+    console.log('Content type:', contentType);
     
     // If JSON response
     if (contentType && contentType.includes('application/json')) {
         const jsonData = await response.json();
+        console.log('Received JSON data');
         return parseJsonJobs(jsonData);
     }
     
     // If HTML response, parse it
     const html = await response.text();
+    console.log('Received HTML, length:', html.length);
+    
+    // Check if we got redirected to login
+    if (html.includes('Sign In') || html.includes('signin') || html.includes('login')) {
+        throw new Error('Authentication failed - redirected to login page');
+    }
+    
     return parseHtmlJobs(html);
 }
 

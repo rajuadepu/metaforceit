@@ -611,15 +611,13 @@
                         <div class="flex items-center space-x-2">
                             <input type="checkbox" id="contract" class="w-4 h-4 md:w-5 md:h-5 text-primary">
                             <label for="contract" class="text-sm md:text-base text-gray-700 font-medium">Contract</label>
-                        </div>
-                    </div>
                     <div id="jobs-count" class="text-sm md:text-base text-gray-600 font-semibold">
-                        Loading jobs...
+                        <!-- Job count will be updated dynamically -->
                     </div>
                 </div>
             </div>
-            <!-- Ceipal Jobs - Direct Link to Portal -->
-            <div id="jobs-container" class="grid grid-cols-1 gap-6">
+            <!-- Jobs Grid - Will be populated with job cards -->
+            <div id="jobs-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div class="col-span-1 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 md:p-12 border-2 border-blue-100">
                     <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
                         <i class="fa-solid fa-briefcase text-white text-3xl"></i>
@@ -1076,6 +1074,14 @@
 </footer>
 
 <!-- JavaScript -->
+<!-- Ceipal Widget Container (hidden, we'll extract data from it) -->
+<div id="example-widget-container" style="display: none;"></div>
+
 <script src="./assets/js/main.js"></script>
+<!-- Ceipal Jobs Widget Script -->
+<script type="text/javascript" src="https://jobsapi.ceipal.com/APISource/widget.js" 
+        data-ceipal-api-key="eGhuajFMMEY4TDVGTkVCQXdyOFprQT09" 
+        data-ceipal-career-portal-id="Z3RkUkt2OXZJVld2MjFpOVRSTXoxZz09"></script>
+<script src="./assets/js/jobs-display.js"></script>
 </body>
 </html>
